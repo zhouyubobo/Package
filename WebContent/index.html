@@ -1,0 +1,71 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+</head>
+<body>
+<div>
+样例代码:
+<br/>
+<pre>
+jQuery.ajax(
+        {
+            type: "get",
+            url: "/Package/Package",
+            data:{
+                paramHashJsonStr:JSON.stringify({
+                    url:"http://ip.taobao.com/service/getIpInfo.php?ip=140.205.220.96",
+                    props:[
+                        {
+                            url:"http://gc.ditu.aliyun.com/geocoding?a=${$parent.data.city}",
+                            alias:"mapAddress",
+                            condition:"($parent.code == 0?true:false)",
+                            parentExp:""
+                        }
+                    ]
+                })
+            },
+            dataType:'json',
+            async:false,
+            success: function(pdata){
+            }
+        }
+    );
+</pre>
+<br/>
+执行结果:
+<pre>
+{
+  "data": {
+    "region": "上海",
+    "area_id": "",
+    "isp": "阿里巴巴",
+    "country_id": "CN",
+    "region_id": "310000",
+    "ip": "140.205.220.96",
+    "country": "中国",
+    "city": "上海",
+    "isp_id": "100098",
+    "city_id": "310100",
+    "area": "",
+    "county": "XX",
+    "county_id": "xx"
+  },
+  "code": 0,
+  "mapAddress": {
+    "lon": 116.40752,
+    "level": -1,
+    "address": "",
+    "cityName": "",
+    "alevel": 4,
+    "lat": 39.90403
+  }
+}
+</pre>
+</div>
+</body>
+<script>
+$(function(){
+})
+</script>
+</html>
