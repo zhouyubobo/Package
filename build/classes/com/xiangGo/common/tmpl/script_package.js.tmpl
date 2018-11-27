@@ -1,0 +1,92 @@
+<%
+var _str_tab = "    ";
+var tabFunc = function(n){
+    var s = "";
+    for(var i=0;i<n;i++){
+        s+= _str_tab;
+    }
+    return s;
+};
+
+var reg = /\\${([^}]{1,})}/g;
+
+var $scriptStr = [];
+$scriptStr.push("var $root = {};");
+
+var dealParamHashFunc = function(paramHash, level, parentExp){
+
+    var scriptStr = [];
+
+    var bt = level*5;
+
+    var r = (Math.random() + "").replace('.',"_");
+    
+    scriptStr.push(tabFunc(bt+0) + "$parent="+parentExp+";");
+  
+    if(paramHash.condition){
+        scriptStr.push(tabFunc(bt+0) + "if("+paramHash.condition+"){");
+    }
+  
+    if(paramHash.url){
+        var qurl = "'"+paramHash.url+"'";
+        /*
+        while ((resultS = reg.exec(paramHash.url)) != null) {
+            qurl = qurl.replace(resultS[0],resultS[1])
+        }
+        */
+        qurl = qurl.replace(reg, "'+$1+'");
+    
+        scriptStr.push(tabFunc(bt+1) + "jQuery.ajax({");
+        scriptStr.push(tabFunc(bt+2) + "type: 'post',");
+        scriptStr.push(tabFunc(bt+2) + "url:"+qurl+",");
+        scriptStr.push(tabFunc(bt+2) + "dataType:'"+(paramHash.returnType?paramHash.returnType:"json")+"',");
+        scriptStr.push(tabFunc(bt+2) + "async:false,");
+        scriptStr.push(tabFunc(bt+2) + "success: function(data_"+r+"){");
+    }
+    if(paramHash.dealFunc){
+        scriptStr.push(tabFunc(bt+3) + "var _dealFunc = "+paramHash.dealFunc+";");
+        scriptStr.push(tabFunc(bt+3) + "data_"+r+" = _dealFunc(data_"+r+");");
+    }
+  
+    if(paramHash.props){
+        for(var i=0;i<paramHash.props.length;i++){
+            var exp = paramHash.props[i].parentExp;
+            if(!exp){
+                exp = "";
+            }
+            if("list" == paramHash.props[i].parentType){
+                scriptStr.push(tabFunc(bt+3) + "for(var i_"+r+"=0;i_"+r+"<data_"+r+""+exp+".length;i_"+r+"++){");
+                
+                scriptStr = scriptStr.concat(dealParamHashFunc(paramHash.props[i],level+1, "data_"+r+""+exp+"[i_"+r+"]"));
+                
+                scriptStr.push(tabFunc(bt+3) + "}");
+            }else{
+                scriptStr = scriptStr.concat(dealParamHashFunc(paramHash.props[i],level+1, "data_"+r+""+exp));
+            }
+        }
+    }
+  
+    var alias = "";
+    if(paramHash.alias){
+        alias = "."+paramHash.alias;
+    }
+    scriptStr.push(tabFunc(bt+3) + parentExp + alias + " = data_"+r+";");
+    
+    if(paramHash.url){
+        scriptStr.push(tabFunc(bt+2) + "}");
+        scriptStr.push(tabFunc(bt+1) + "});");
+    }
+    
+    if(paramHash.condition){
+      scriptStr.push(tabFunc(bt+0) + "}");
+    }
+  
+    return scriptStr;
+};
+%>
+
+<%
+$scriptStr = $scriptStr.concat(dealParamHashFunc(paramHash, 0, "$root"));
+%>
+
+<%=$scriptStr.join('\\n')%>

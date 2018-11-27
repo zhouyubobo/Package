@@ -11,4 +11,26 @@
     <servlet-name>Package</servlet-name>
     <url-pattern>/Package</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>ParseToScript</display-name>
+    <servlet-name>ParseToScript</servlet-name>
+    <servlet-class>com.xiangGo.web.ParseToScriptServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ParseToScript</servlet-name>
+    <url-pattern>/ParseToScript</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>PatternMapping</display-name>
+    <servlet-name>PatternMapping</servlet-name>
+    <servlet-class>com.xiangGo.web.PatternMappingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PatternMapping</servlet-name>
+    <url-pattern>/PatternMapping</url-pattern>
+  </servlet-mapping>
 </web-app>

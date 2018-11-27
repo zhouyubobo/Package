@@ -1,5 +1,24 @@
 # Package
-## 拼接json/text格式接口对象
+## 服务编排, 拼接json/text格式接口对象
+编排基于http协议的微服务
+
+### 服务注册逻辑
+通过/Package/PatternMapping进行服务对应地址查看或注册
+1. 如/Package/PatternMapping?op=register&pattern=^/.*&host=127.0.0.1:8080 进行注册
+2. 如/Package/PatternMapping?op=unRegister&pattern=^/.*&host=127.0.0.1:8080 进行解绑
+3. 如/Package/PatternMapping进行查看
+
+### 简单执行流程说明
+
+按照顺序层级的url访问接口
+1. 计算$parent的值
+处理上级返回对象, 根据parentExp来获取$parent变量的值, parentExp为空表示$parent为上级返回对象本身
+注: 第一级$parent为空对象
+2. 讲$parent带执行condition表达式, 返回true则执行
+3. 讲$parent带入获取URL, 并根据服务注册情况获取完整URL
+4. 执行URL返回结果根据reurnType[json, txt]处理为对象, 默认为json对象, 获取$obj
+5. 讲$obj带入deafFunc执行, 返回结果赋值给$obj
+6. 讲$obj以alias的值为属性名, 赋值给$parent对象
 
 ### 样例代码
 ```javascript
@@ -27,11 +46,6 @@ jQuery.ajax(
         }
     );
 ```
-### 简单的使命
-按照顺序层级的url访问接口
-1. 访问 http://ip.taobao.com/service/getIpInfo.php?ip=140.205.220.96 并返回json对象
-2. 将返回json对象带入后面计算, $parent变量的值根据parentExp来获取, 空表示json对象本身
-3. $parent带入执行后, 返回的值以alias的值为属性名, 赋值给$parent对象
 
 ### 输入输出样例
 输入参数
@@ -77,3 +91,7 @@ jQuery.ajax(
   }
 }
 ```
+
+
+### 编排Ajax代码转换逻辑
+/Package/ParseToScript?hostParse=1&paramHashJsonStr=
